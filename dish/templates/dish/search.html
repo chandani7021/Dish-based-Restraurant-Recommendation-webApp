@@ -1,0 +1,74 @@
+{% extends "dish/layout.html" %}
+
+{% block title %}
+Search
+{% endblock %}
+
+{% block body%}
+<div>
+<h1><u><em>Recommendation for genuine fine-dining experience</em></u></h1>
+<h2><b>"Foodies welcome here."</b></h2>
+<h5>Search the dish to get recommendation.</h5>
+<br />
+<!-- Form to get data -->
+<form method = "GET">
+    {% csrf_token %}
+    <input type = "text" name = "query" value = "{{ query}}" placeholder = "Search">
+   
+    <input type = "submit" value="Search">
+</form>
+</div>
+<br />
+
+<!-- To show the search result in table -->
+{% if results %}
+<div>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>Sr. No</th>
+            <th>Restraurant Name</th>
+            <th>Location</th>
+            <th>Dish</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ result.name }}</td>
+            <td>{{ result.location }}</td>
+            <td>{{ result.dish}}</td>
+            <td>{{ result.price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<div class="alert alert-primary" role="alert">No Dishes Found<//div>
+{% endif %}
+
+
+<!-- pagination controls -->
+
+{% if page_obj %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?query={{ query }}&page=1">&laquo; first</a>
+                <a href="?query={{ query }}&page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current-page">{{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?query={{ query }}&page={{ page_obj.next_page_number }}">next</a>
+                <a href="?query={{ query }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+
+{% endblock %}
